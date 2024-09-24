@@ -1,6 +1,6 @@
 ---
-title: "Water Quality and Safety at Toronto Beaches"
-subtitle: "A Data-Driven Investigation into Seasonal Trends and Public Health Implications"
+title: "Environmental Factors Affecting Water Quality at Toronto Beaches"
+subtitle: "Investigation into Seasonal Trends"
 author: 
   - Ziyuan Shen
 thanks: "Code and data are available at: https://github.com/Serena-SHEN1011/Toronto-Beach-Data"
@@ -222,7 +222,7 @@ ggplot(cleaned_data, aes(x = rain, y = turbidity)) +
 ## Data Collection and Limitations
 Observations in the dataset are obtained by city staff through a combination of both manual estimates and instrumental measurements. While the use of automatic tools such as thermometers and turbidimeters can provide more objective and consistent data, manual observations such as waterfowl counts and qualitative assessments of water clarity introduce an element of subjectivity. In addition, removing outliers and missing data entries during the clean-up process addresses errors that can occur during data collection, especially extreme or unreasonable values (e.g., water temperatures above 200°C).
 
-In summary, we measured real-world temperature, wind, rainfall, turbidity, and waterfowl activity using a variety of instruments and estimation techniques, resulting in quantifiable data entries in the dataset. These measurements form the basis for analysing environmental conditions at Toronto Beach, and transform natural phenomena into structured data that can be analysed to reveal trends, patterns and relationships between different variables.
+In summary, we measured real-world temperature, speed of wind, rainfall, turbidity, and waterfowl activity using a variety of instruments and estimation techniques, resulting in quantifiable data entries in the dataset. These measurements form the basis for analysing environmental conditions at Toronto Beach, and transform natural phenomena into structured data that can be analysed to reveal trends, patterns and relationships between different variables.
 
 
 \newpage
