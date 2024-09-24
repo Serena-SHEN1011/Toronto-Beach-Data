@@ -1,14 +1,14 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Water Quality and Safety at Toronto Beaches"
+subtitle: "A Data-Driven Investigation into Seasonal Trends and Public Health Implications"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
-date: today
+  - Ziyuan Shen
+thanks: "Code and data are available at: https://github.com/Serena-SHEN1011/Toronto-Beach-Data"
+date: 22 September 2024
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This study examines the water quality and environmental conditions of Toronto beaches based on daily observations collected from May to September each year from 2010 to 2023. The analyses focused on identifying key environmental factors that contribute to water safety warnings, such as temperature, waterFowl presence, and wave action. The results of the study indicate a strong link between rainfall, water temperature fluctuations and the issuance of beach advisories. This study provides valuable insights for policy makers and public health officials to enhance safety measures and management of Toronto's beaches during the peak summer months."
 format: pdf
+toc: true
 number-sections: true
 bibliography: references.bib
 ---
@@ -19,197 +19,267 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(opendatatoronto)
+library(kableExtra)
+library(here)
+library(tibble)
+```
+
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+
+# Load the clean data
+cleaned_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
 ```
 
 
 # Introduction
+Toronto's beaches are important recreational destinations for residents and visitors, especially during the summer period. However, the safety and quality of these beaches are largely influenced by everyday environmental conditions such as wind speed, air and water temperatures, and the presence of wildlife. These factors not only affect beach availability, but also have significant public health implications. For example, a study in PLOS ONE (@young2023recreational) investigated microbial contamination in recreational waters. Understanding these environmental factors is critical for public health officials to issue appropriate recommendations and ensure that beachgoers are aware of potential risks.
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+Despite ongoing efforts to monitor and manage beach conditions, there has been limited comprehensive analysis of how these environmental variables interact and affect overall beach safety. For example, a study published in Springer explored the correlation between environmental factors and recreational water illnesses, pointing to the need for better predictive models and interventions (@saleem2023same). Similarly, research in MDPI found that rainfall, water turbidity and the presence of waterfowl were often associated with increased bacterial contamination of beach waters, which further emphasises the importance of detailed analysis of beach conditions (@sanchez2021region). However, the specific relationships between wind speed and temperature changes on Toronto beaches remain under-explored. 
 
-The remainder of this paper is structured as follows. @sec-data....
+There are over 18,000 daily observations of beach conditions in this dataset. 
 
-
+In the following section, I chose six key environmental variables to examine in depth: date, beach name, wind speed, air temperature, water temperature, and bird populations. The analysis is based on observations of over 18,000 daily beach conditions from the Toronto Open Data Portal. By using these variables, we explore how environmental factors affect beach safety and availability. Specifically, we examined the relationship between wind speed and water quality, bird populations and water pollution risk, and how temperature variations affect the overall beach experience. This analysis will help to better plan and communicate the safety and attractiveness of Toronto's beaches.
+  
+\newpage
 
 # Data {#sec-data}
+## Data Overview {#sec1-data} 
+To investigate water quality and beach conditions in Toronto, I found the ‘Toronto Beach Observations’ dataset from the Open Data Toronto portal through the library opendatatoronto (@opendatatoronto). This dataset is provided by the City of Toronto and includes daily observations of water quality and beach conditions at Toronto's public beaches. It records water temperature, wind speed, and other important information critical to public health and recreational safety. A potential limitation of this dataset is the uncertainty of water quality sampling locations, as water quality conditions can change due to factors such as local weather and nearby pollution sources. Therefore, using aggregated data for daily conditions may not fully reflect the specific conditions at each beach. The raw data contains more than 18,000 observations of daily beach conditions and includes a number of variables, including date, beach name, wind speed, avian population, turbidity, etc. All variables are explained and described in (Section A.[1](#appendix-a.1)) In my this report, I will focuses on 8 key variables: date, beach name, wind's speed, air temperature, wether rain or not, water temperature, waterfowl, water turbidity. 
+  
+I used R(@citeR) for all statistical computing and visualizing and associated software packages tidyverse(@tidyverse) to extensively for data wrangling, visualization, and manipulation. I also used dplyr(@dplyr) or the efficient processing of data, including filtering, summarising and selecting variables. Additionally, I leveraged kableExtra (@kableExtra) package to improve the tables in R Markdown documents. Similar methods have been used to assess environmental impacts on public spaces, for example, a ScienceDirect(@saleem2022validation) study examined the impact of environmental stressors on the availability of urban green space. Our analyses explored how environmental factors affect the safety and availability of beaches over time, with a particular focus on relationships such as the effect of wind speed on water turbidity and the impact of bird populations on pollution risk. This exhaustive approach provides valuable insights for public health officials and beach managers, helping to enhance the decision-making process regarding beach proposals.
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 
+## Cleaned Data {#sec2-data} 
+During the data cleaning process, I took several important steps to ensure that the dataset was suitable for analysis. First, all rows containing missing values (NA) were removed. This decision was made to avoid any potential biases or inaccuracies that might result from incomplete data, as missing values could skew the results of the statistical analyses. By removing these rows, the dataset remained consistent and could be used for further analysis without introducing unnecessary complexity in dealing with missing data.
+
+At the same time, several variables were removed because they were either redundant or irrelevant to the focus of this analysis. Wind direction was excluded because it has less impact on water conditions than wind speed. Similarly, rainfall was replaced by a simplified binary rainfall variable that indicates whether or not it rained on a given day. This binary approach was chosen to simplify the analysis without compromising the central idea that rainfall affects water quality. The role of waves was removed. This is because, although wave intensity affects beach conditions, its overall effect is not as important to the current discussion of weather, waterfowl, and water quality.
+
+In addition, I have carefully selected nine key variables that were deemed most valuable to this analysis. These variables included date (the specific date on which observations were recorded) and beach name (identifying the different Toronto beaches on which environmental data were collected). Wind speed and air temperature were listed as key weather-related variables, as these factors have a significant impact on beach conditions and overall water quality. Water temperature was also considered critical because of its impact on both the beachgoer experience and biological activity in the water. Waterfowl population and turbidity were chosen because they are directly related to water quality. Waterfowl can cause pollution, while turbidity measures water clarity and is often used as an indicator of pollution. Finally, the presence or non-presence of rain was included to capture binary rainfall scenarios, as rainfall can affect water clarity and carry pollutants into the beach environment.
+
+I cleaned and prepared a subset of the data as shown in @tbl-sum1 below. I showed the first and last 5 rows of the key variables in this table.
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
 #| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
+#| eval: true
 #| warning: false
 #| message: false
+#| label: tbl-sum1
+#| fig-cap: "Displaying the first and last 5 rows of seven key variables"
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+# choose 8 variables
+key_variables <- cleaned_data %>%
+  select(dataCollectionDate, beachName, windSpeed, airTemp, rain, waterTemp, waterFowl, turbidity)
 
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
+# Displaying the first and last 5 rows of key variables
+sample_data <- bind_rows(head(key_variables, 5), tail(key_variables, 5))
+
+# Generate table
+kbl(sample_data, 
+    col.names = c("Date", "Beach", "Wind (km/h)", "Air Temp (°C)", "Rain", "Water Temp (°C)", "Fowl Count", "Turbidity (NTU)"),
+    ) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = F, 
+                position = "center",
+                font_size = 9) %>%
+  column_spec(1, bold = TRUE, width = "6em") %>%  
+  column_spec(2, width = "8em") %>%  
+  column_spec(3:4, width = "5em") %>%  
+  column_spec(5, width = "2em") %>%  
+  column_spec(6, width = "6em") %>%
+  column_spec(7:8, width = "3em")
+
 ```
 
-Talk way more about it. 
 
+## Data Visualization {#sec3-data} 
+  Air temperature is a key indicator of beach conditions. @fig-his1 visualizes the distribution of air temperature at Toronto beaches and the count of observations for different temperature ranges. The x-axis represents air temperature in degrees Celsius (°C), while the y-axis represents the count of observations. The distribution is approximately normal, centered around 20°C, indicating that most observations were recorded in this temperature range. There are fewer observations in the lower and higher temperature ranges, with temperatures ranging from around 5°C to nearly 35°C.
+  The bar heights reflect the number of observations within each 2°C bin, showing that the majority of temperatures fall between 15°C and 25°C, typical of summer conditions. The steelblue color used for the bars provides a clear contrast against the black outlines, making the data easily distinguishable. This histogram effectively summarizes the air temperature data, revealing that Toronto beaches experience mild to warm temperatures during the observation period.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-his1
+#| fig-cap: "Air Temperature Distribution"
 
+ggplot(cleaned_data, aes(x = airTemp)) +
+  geom_histogram(binwidth = 2, fill = "steelblue", color = "black") +
+  labs(x = "Air Temperature (°C)", y = "Count") +
+  theme_minimal()
 
-# Model
+```
+  
+  Wind speed affects both the comfort of beachgoers and water quality. @fig-bar1 illustrates the average wind speed at different Toronto beaches. The x-axis represents the average wind speed in kilometers per hour (km/h), while the y-axis lists the names of the beaches. The chart is horizontally oriented for clarity, with the wind speed values increasing from left to right.The lightblue bars represent the average wind speed at each beach, and the bars are arranged in descending order of wind speed. The chart highlights the variability in wind conditions across different beaches, suggesting that some beaches are more exposed to wind, potentially affecting people's experiences and water conditions.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-bar1
+#| fig-cap: "Average Wind Speed by Beach"
 
-The goal of our modelling strategy is twofold. Firstly,...
+ggplot(cleaned_data %>% group_by(beachName) %>% summarize(avg_wind = mean(windSpeed, na.rm = TRUE)), 
+       aes(x = reorder(beachName, avg_wind), y = avg_wind)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  labs(x = "Beach", y = "Average Wind Speed (km/h)") +
+  coord_flip() + 
+  theme_minimal()
 
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+```
 
-## Model set-up
+  Water temperature varies between beaches, which may influence swimmers' comfort and number of waterfowl in the water. @fig-bar2 shows the average water temperature at different Toronto beaches, with the x-axis representing the average water temperature in degrees Celsius (°C) and the y-axis listing the beach names. The chart is color-coded to distinguish each beach, and the bars are arranged in descending order of average water temperature.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-bar2
+#| fig-cap: "Average water temperature by beach"
+#| fig-subcap: ["Across different Toronto beaches"]
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+ggplot(cleaned_data %>% group_by(beachName) %>% summarize(avg_water_temp = mean(waterTemp, na.rm = TRUE)), 
+       aes(x = reorder(beachName, avg_water_temp), y = avg_water_temp, fill = beachName)) +
+  geom_col() +
+  labs(x = "Beach", y = "Average Water Temperature (°C)") +
+  coord_flip() +
+  theme_minimal()  
+```
 
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
+  @fig-bar3 shows the total waterfowl count on rainy versus non-rainy days. The x-axis represents the presence or absence of rain, with three categories: "N/A" (unknown rain status), "No" (non-rainy days), and "Yes" (rainy days). The y-axis represents the total number of waterfowl observed. The chart indicates a noticeable difference in waterfowl presence based on weather conditions, with more waterfowl observed on non-rainy days compared to rainy ones. We can see that on non-rainy days (labeled "No"), the highest number of waterfowl were observed, with a count exceeding 60,000. On rainy days (labeled "Yes"), the total waterfowl count is significantly lower, around 40,000. The "N/A" category, representing days with unknown rain status, shows very few waterfowl, with a total count close to zero.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-bar3
+#| fig-cap: "Total water fowl count on rainy vs non-rainy days"
+#| results: hide  # This hides the console output but keeps the plot visible
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
+# 2.# Bar plot: Total water fowl count on rainy vs non-rainy days
+cleaned_data <- cleaned_data %>%
+  mutate(rain = ifelse(is.na(rain), "Unknown", rain))  # Convert NA values to "Unknown"
 
+# Checking the unique values of rain column
+unique(cleaned_data$rain)
 
-### Model justification
+# Bar plot: Total water fowl count on rainy vs non-rainy days
+fowl_rain_plot <- cleaned_data %>%
+  group_by(rain) %>%
+  summarize(total_water_fowl = sum(waterFowl, na.rm = TRUE)) %>%
+  ggplot(aes(x = rain, y = total_water_fowl, fill = rain)) +
+  geom_col() +
+  labs(title = "Total Water Fowl Count on Rainy vs. Non-Rainy Days",
+       subtitle = "Comparing the total number of water fowls observed on rainy vs. non-rainy days",
+       x = "Rain (Yes/No)", y = "Total Water Fowl Count") +
+  scale_fill_manual(values = c("lightblue", "lightgreen", "gray")) +
+  theme_minimal() +
+  theme(legend.position = "none")
 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
+# Print plot and caption
+print(fowl_rain_plot)
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
+```
+  @fig-scatter1 illustrates the relationship between wind speed (x-axis, measured in km/h) and turbidity (y-axis, measured in NTU). Each point represents an observation, with wind speed along the horizontal axis and turbidity along the vertical axis. This scatter plot shows that there is no strong linear relationship between wind speed and turbidity. However, lower wind speeds tend to be associated with a wide range of turbidity levels, whereas higher wind speeds appear to be less common and do not show higher turbidity levels. Most data points are clustered in areas with lower wind speeds (below 20 km/h) and turbidity levels below 50 NTU. Some outliers show higher turbidity levels above 150 NTU, especially at lower wind speeds. At wind speeds above 20 km/h, the data points become scattered, with very few data points over 40 km/h.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-scatter1
+#| fig-cap: "Wind speed vs turbidity"
+#| fig-subcap: ["Analyzing the relationship between wind speed and water turbidity"]
 
+# Scatter plot: Wind speed vs turbidity
+wind_turbidity_plot <- ggplot(cleaned_data, aes(x = windSpeed, y = turbidity)) +
+  geom_point(alpha = 0.6, color = "orange") +
+  labs(x = "Wind Speed (km/h)", y = "Turbidity (NTU)") +
+  theme_minimal()
 
-# Results
+# Print plot and caption
+print(wind_turbidity_plot)
+```
 
-Our results are summarized in @tbl-modelresults.
+  Rainfall significantly impacts water turbidity, as rain can introduce pollutants and sediments into the water. @fig-box1 shows the distribution of turbidity levels (measured in NTU) on rainy versus non-rainy days. The x-axis represents whether rain was present ("Yes"), absent ("No"), or unknown ("N/A"), while the y-axis represents turbidity levels. The box plot suggests that most observations, whether rainy or not, tend to have lower turbidity levels. Non-rainy days exhibit a slightly broader spread of turbidity levels, but the majority of observations have relatively low turbidity (close to 0 NTU), with several outliers reaching beyond 200 NTU. Turbidity levels were also mostly low in Rainy (Yes) and N/A(Unknown), but there were outliers over 150 NTU.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-box1
+#| fig-cap: "Turbidity Levels on Rainy vs. Non-Rainy Days"
+
+ggplot(cleaned_data, aes(x = rain, y = turbidity)) +
+  geom_boxplot(aes(fill = rain)) +
+  labs(x = "Rain (Yes/No)", y = "Turbidity (NTU)") +
+  theme_minimal()
+```
+
 
 ```{r}
 #| echo: false
 #| eval: true
 #| warning: false
 #| message: false
+#| label: fig-his2
+#| fig-cap: "Distribution of water temperature"
 
-library(rstanarm)
+# 5.Histogram: Distribution of water temperature
+water_temp_hist <- ggplot(cleaned_data, aes(x = waterTemp)) +
+  geom_histogram(binwidth = 20, fill = "blue", color = "black") +
+  labs(x = "Water Temperature (°C)", y = "Count") +
+  theme_minimal()
 
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+# Print plot and caption
+print(water_temp_hist)
+
 ```
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
-
-
-
-# Discussion
-
-## First discussion point {#sec-first-point}
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
 
 \newpage
 
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
+# Appendix {#appendix-a}
+## Variable description{#appendix-a.1}
 ```{r}
 #| echo: false
 #| eval: true
-#| message: false
 #| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
+#| message: false
+#| label: tbl-sum2
+#| fig-cap: "Description of variables in the dataset"
 
-plot(first_model, "trace")
+data <- data.frame(
+  column = c("_id", "dataCollectionDate", "beachName", "windSpeed", 
+             "windDirection", "airTemp", "rain", "rainAmount", "waterTemp", 
+             "waterFowl", "waveAction", "waterClarity", "turbidity"),
+  
+  description = c("Unique row identifier for Open Data database", 
+                  "Date observations were collected", 
+                  "Name of beach where observations were collected", 
+                  "Wind speed measured in km/h", 
+                  "Wind directions - East, North-East, North, North-West, West, South-West, South, South-East", 
+                  "Air temperature in degrees Celsius", 
+                  "Presence of rain - Yes, No", 
+                  "Amount of rainfall in mm in the last 24 hours", 
+                  "Water temperature in degrees Celsius", 
+                  "Count of water fowl seen", 
+                  "Observations on wave action - high, low, moderate, none", 
+                  "Visual state of water's clarity - free form text", 
+                  "Turbidity of water measured in Nephelometric Turbidity Units (NTUs)")
+)
+data$description <- str_wrap(data$description, width = 25)
 
-plot(first_model, "rhat")
+kable(data, 
+      align = "l", 
+      col.names = c("Column", "Description"),
+      escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = F, 
+                position = "center", 
+                font_size = 10)
 ```
+
 
 
 
@@ -217,5 +287,4 @@ plot(first_model, "rhat")
 
 
 # References
-
 
