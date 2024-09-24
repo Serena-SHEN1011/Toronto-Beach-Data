@@ -1,10 +1,10 @@
 ---
 title: "Environmental Factors Affecting Water Quality at Toronto Beaches"
-subtitle: "Investigation into Seasonal Trends"
+subtitle: "Investigation into Seasonal Trends(2010-2023)"
 author: 
   - Ziyuan Shen
 thanks: "Code and data are available at: https://github.com/Serena-SHEN1011/Toronto-Beach-Data"
-date: 22 September 2024
+date: 23 September 2024
 date-format: long
 abstract: "This study examines the water quality and environmental conditions of Toronto beaches based on daily observations collected from May to September each year from 2010 to 2023. The analyses focused on identifying key environmental factors that contribute to water safety warnings, such as temperature, waterFowl presence, and wave action. The results of the study indicate a strong link between rainfall, water temperature fluctuations and the issuance of beach advisories. This study provides valuable insights for policy makers and public health officials to enhance safety measures and management of Toronto's beaches during the peak summer months."
 format: pdf
