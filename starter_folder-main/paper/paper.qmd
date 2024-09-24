@@ -40,9 +40,7 @@ Toronto's beaches are important recreational destinations for residents and visi
 
 Despite ongoing efforts to monitor and manage beach conditions, there has been limited comprehensive analysis of how these environmental variables interact and affect overall beach safety. For example, a study published in Springer explored the correlation between environmental factors and recreational water illnesses, pointing to the need for better predictive models and interventions (@saleem2023same). Similarly, research in MDPI found that rainfall, water turbidity and the presence of waterfowl were often associated with increased bacterial contamination of beach waters, which further emphasises the importance of detailed analysis of beach conditions (@sanchez2021region). However, the specific relationships between wind speed and temperature changes on Toronto beaches remain under-explored. 
 
-There are over 18,000 daily observations of beach conditions in this dataset. 
-
-In the following section, I chose six key environmental variables to examine in depth: date, beach name, wind speed, air temperature, water temperature, and bird populations. The analysis is based on observations of over 18,000 daily beach conditions from the Toronto Open Data Portal. By using these variables, we explore how environmental factors affect beach safety and availability. Specifically, we examined the relationship between wind speed and water quality, bird populations and water pollution risk, and how temperature variations affect the overall beach experience. This analysis will help to better plan and communicate the safety and attractiveness of Toronto's beaches.
+There are over 18,000 daily observations of beach conditions in this dataset. In the following section, I chose six key environmental variables to examine in depth: date, beach name, wind speed, air temperature, water temperature, and bird populations. By using these variables, we explore how environmental factors affect beach safety and availability. Specifically, we examined the relationship between wind speed and water quality, bird populations and water pollution risk, and how temperature variations affect the overall beach experience. This analysis will help to better plan and communicate the safety and attractiveness of Toronto's beaches. Structure is inspired mainly by @rohan.
   
 \newpage
 
@@ -218,24 +216,13 @@ ggplot(cleaned_data, aes(x = rain, y = turbidity)) +
 ```
 
 
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: fig-his2
-#| fig-cap: "Distribution of water temperature"
+\newpage
 
-# 5.Histogram: Distribution of water temperature
-water_temp_hist <- ggplot(cleaned_data, aes(x = waterTemp)) +
-  geom_histogram(binwidth = 20, fill = "blue", color = "black") +
-  labs(x = "Water Temperature (°C)", y = "Count") +
-  theme_minimal()
+# Discussion{#third}
+## 
 
-# Print plot and caption
-print(water_temp_hist)
 
-```
+
 
 \newpage
 
