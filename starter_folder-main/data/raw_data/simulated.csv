@@ -1,0 +1,51 @@
+id,dataCollectionDate,beachName,windSpeed,windDirection,airTemp,rain,rainAmount,waterTemp,waterFowl,waveAction,waterClarity,turbidity
+1,2020-05-28,Beach1,31.9,South-East,19.9,No,0,9,43,moderate,Very Cloudy,94.5
+2,2020-05-30,Beach1,13.3,South,20.3,No,0,7.3,9,low,Moderate,5
+3,2020-08-10,Beach1,28.5,North-West,21.8,No,0,7.3,45,high,Clear,42.9
+4,2020-05-27,Beach1,2.8,South-West,27.1,No,0,15.9,36,moderate,Clear,42.8
+5,2020-07-19,Beach1,14.4,West,24,No,0,11.7,42,moderate,Cloudy,88.9
+6,2020-06-03,Beach1,47.2,West,20.4,Yes,28.4,5.9,42,none,Moderate,0.5
+7,2020-08-14,Beach1,26.9,South-West,26.4,No,0,19.7,34,moderate,Very Cloudy,93.7
+8,2020-05-27,Beach1,25.8,East,30,Yes,9.3,23.1,41,none,Cloudy,71.7
+9,2020-08-31,Beach1,24.6,West,23,Yes,25.6,16.5,5,moderate,Very Cloudy,64.5
+10,2020-08-03,Beach1,6.7,South,19.6,Yes,23,7.7,8,low,Cloudy,28.4
+11,2020-09-05,Beach2,32.5,North,34.2,No,0,23.7,7,none,Very Cloudy,69
+12,2020-06-06,Beach2,0.7,North-West,30.9,No,0,19.9,29,moderate,Cloudy,2.1
+13,2020-05-17,Beach2,19.7,South-West,30.6,No,0,17.7,29,none,Clear,5.5
+14,2020-06-06,Beach2,31.1,West,30.6,No,0,24.3,43,high,Moderate,11.3
+15,2020-08-22,Beach2,11.3,South-West,11.5,No,0,8.1,12,low,Very Cloudy,35.2
+16,2020-07-06,Beach2,42.8,North-West,15.7,No,0,15.4,26,high,Moderate,57.2
+17,2020-07-09,Beach2,2.1,South-West,12.3,No,0,12.3,44,high,Very Cloudy,7.5
+18,2020-05-19,Beach2,0.5,West,18.4,Yes,8.2,18.2,12,high,Very Cloudy,61.2
+19,2020-08-11,Beach2,49.1,South-East,12.9,No,0,21.7,19,high,Cloudy,17.2
+20,2020-07-28,Beach2,16.5,South,24.6,No,0,19.1,4,high,Clear,61.3
+21,2020-07-20,Beach3,44.7,West,18.2,No,0,18.2,19,none,Cloudy,53.2
+22,2020-08-07,Beach3,33.2,East,30.5,No,0,14.1,9,moderate,Cloudy,69.7
+23,2020-07-01,Beach3,48,North,14,Yes,27.1,12.4,41,low,Cloudy,50.1
+24,2020-06-28,Beach3,43.6,North-West,19,No,0,11,36,low,Clear,36.2
+25,2020-06-13,Beach3,49.8,North-East,32.5,No,0,23,26,low,Clear,70.8
+26,2020-09-02,Beach3,4.2,North-West,34.9,No,0,11.2,23,high,Moderate,74
+27,2020-06-08,Beach3,4.5,West,10.5,No,0,5.6,20,low,Very Cloudy,2.4
+28,2020-05-24,Beach3,13.9,South-West,31.1,No,0,23.7,31,low,Cloudy,39.4
+29,2020-09-15,Beach3,25.1,North-East,30.5,No,0,19.6,41,high,Moderate,75.9
+30,2020-08-29,Beach3,13.6,South-East,19.1,No,0,15.8,28,low,Very Cloudy,10
+31,2020-09-02,Beach4,19.5,South-West,11.9,Yes,11.1,19.5,9,moderate,Cloudy,39.4
+32,2020-07-08,Beach4,40.8,North,31.6,No,0,19.3,32,moderate,Cloudy,37.6
+33,2020-09-13,Beach4,7.7,North-East,10.9,No,0,23.2,40,high,Cloudy,36.7
+34,2020-05-26,Beach4,42.1,South-West,28.8,Yes,26.1,23.2,14,moderate,Cloudy,78.7
+35,2020-07-23,Beach4,11.1,North-West,26.5,No,0,19.4,15,none,Very Cloudy,13
+36,2020-07-06,Beach4,27.9,South,30.4,No,0,18.7,16,none,Moderate,31.7
+37,2020-07-05,Beach4,33.8,South-West,15.8,No,0,23.6,32,low,Very Cloudy,74.2
+38,2020-06-27,Beach4,31.6,North-West,32.4,No,0,18,32,high,Moderate,11.9
+39,2020-09-10,Beach4,47.4,South-West,25,No,0,12.2,26,none,Clear,22.3
+40,2020-08-30,Beach4,49,South-West,33.1,No,0,20.4,8,moderate,Cloudy,95.2
+41,2020-08-01,Beach5,41.5,East,10.4,No,0,12.3,15,none,Cloudy,38.1
+42,2020-05-30,Beach5,23.5,North-East,14.2,No,0,13.8,13,none,Clear,97.6
+43,2020-09-15,Beach5,43.1,North-East,21,Yes,2.6,11.4,43,high,Very Cloudy,57.6
+44,2020-07-21,Beach5,17.7,West,17.2,No,0,11.2,49,low,Clear,20.4
+45,2020-06-12,Beach5,33.9,South,30,No,0,7.8,49,low,Clear,45.4
+46,2020-05-28,Beach5,6.2,North-West,13.5,No,0,20.5,11,none,Moderate,84.6
+47,2020-08-07,Beach5,1,North,11.3,Yes,14.5,17.8,47,moderate,Very Cloudy,13.8
+48,2020-09-15,Beach5,38.5,South-West,33.2,No,0,16.8,3,low,Moderate,25.9
+49,2020-06-23,Beach5,40.7,East,20.5,No,0,23,1,moderate,Clear,6.9
+50,2020-07-04,Beach5,5.4,South-West,33.4,Yes,20.9,19.9,50,moderate,Clear,50.6
