@@ -145,10 +145,10 @@ kbl(summary_stats, col.names = c("Variable", "Mean", "SD", "Min", "Median", "Max
 ```
 @tbl-sum2 summaries the numerical data. The average wind speed was 13.3km/h with a maximum of 50 km/h, which stirs up sediments and may increase water turbidity. The average air temperature was 19.9°C, which directly affects the comfort of beachgoers and water quality, since warm air leads to higher water temperatures and increased microbial activity. Water temperatures averaged 15.6°C, reaching a maximum of 27°C during the summer months. this is often associated with bacterial growth, leading to health warnings. The number of waterfowl is another important factor, with an average of 32.3 waterfowl, but sometimes the number spikes to 450. The presence of waterfowl can bring faecal pollution into the water which increases the risk of bacterial contamination and water quality warnings.
 
-\newpage
 
-# Result-Data Visualization {#third-result}
-## Turbidity across different beach {#third1-result} 
+
+##Data Visualization {#sec3-data} 
+### Turbidity across different beach 
 @fig-box1 provides a clear visualization of the distribution of turbidity across various beach locations. Bluffer's Beach Park, Kew Balmy Beach, and Cherry Beach appear to have the highest overall turbidity levels, with numerous outliers reaching above 50 NTU and some exceeding 100 NTU. Hanlan’s Point Beach, Ward’s Island Beach, Gibraltar Point Beach, and Centre Island Beach exhibit much lower turbidity levels overall. Other beaches are showing more variability than low-turbidity beaches but less than the higher-turbidity ones.
 ```{r}
 #| echo: false
@@ -167,7 +167,7 @@ ggplot(key_variables, aes(x = reorder(beachName, turbidity, FUN = median), y = t
 
 ```
 
-## Relationship between Air Temperature and Turbidity {#third2-result} 
+### Relationship between Air Temperature and Turbidity 
 @fig-scatter1 shows a flat linear regression line, indicating that turbidity remains relatively unaffected by changes in air temperature.
 ```{r}
 #| echo: false
@@ -187,7 +187,7 @@ ggplot(key_variables, aes(x = airTemp, y = turbidity)) +
 ```
 
 
-## Relationship between Water Temperature and Turbidity {#third3-result} 
+### Relationship between Water Temperature and Turbidity 
 Relationship between Water Temperature and Turbidity shows the similar trend to @fig-scatter1. Both @fig-scatter1 and @fig-scatter2 shows that air temperature and water temperature are not a strong predictor of turbidity.
 ```{r}
 #| echo: false
@@ -207,7 +207,7 @@ ggplot(key_variables, aes(x = waterTemp, y = turbidity)) +
 ```
 
 
-## Relationship between Wind Speed and Turbidity{#third4-result} 
+### Relationship between Wind Speed and Turbidity
 @fig-scatter3 illustrates the relationship between wind speed (x-axis, measured in km/h) and turbidity (y-axis, measured in NTU). This scatter plot shows that there is no strong linear relationship between wind speed and turbidity. 
 ```{r}
 #| echo: false
@@ -225,7 +225,7 @@ ggplot(key_variables, aes(x = windSpeed, y = turbidity)) +
   theme_minimal()
 ```
 
-## Relationship between Waterfowl Count and Turbidity{#third5-result} 
+### Relationship between Waterfowl Count and Turbidity
 @fig-scatter4 is a scatter plot demonstrates the relationship between Waterfowl Count and Turbidity (measured in NTU). There is a slight upward trend, indicated by the blue linear regression line. This suggests that as the number of waterfowl increases, the turbidity also tends to rise, although the increase is relatively mild. Most of the data points are clustered around lower turbidity values (0-50 NTU), especially when waterfowl counts are below 100. This suggests that in many cases the presence of birds does not immediately lead to significant turbidity in the water column.
 ```{r}
 #| echo: false
@@ -262,7 +262,7 @@ ggplot(key_variables, aes(x = waterFowl, y = turbidity)) +
 
 ```
 
-## Turbidity Levels on Rainy vs. Non-Rainy Day{#third6-result} 
+### Turbidity Levels on Rainy vs. Non-Rainy Day
 @fig-box2 shows the distribution of turbidity levels (measured in NTU) on rainy versus non-rainy days. On rainy days, the change in turbidity increases relatively significantly. The occurrence of multiple outliers above 50 NTU indicates that rainfall is largely responsible for the increase in turbidity. The larger interquartile range (IQR) indicates that turbidity values are more scattered on rainy days compared to non-rainy days.
 ```{r}
 #| echo: false
@@ -281,24 +281,24 @@ ggplot(cleaned_data, aes(x = rain, y = turbidity)) +
 
 \newpage
 
-# Discussion{#fourth-dis}
-## Impacts of beach location on water quality{#fourth1-dis}
+# Discussion{#third-dis}
+## Impacts of beach location on water quality{#third1-dis}
 When analyzing the relationship between beach location and turbidity, Bluffer's Beach Park, Kew Balmy Beach and Cherry Beach were consistently higher compared to the other locations. These beaches not only had more outliers but also had larger interquartile ratios (IQRs), indicating large fluctuations in water quality over time. The high turbidity at these beaches may be due to their geographic location, proximity to sources of urban runoff, or local environmental conditions that increase the potential for pollution.
 
-## Impact of Rainfall on Water Quality{#fourth2-dis}
+## Impact of Rainfall on Water Quality{#third2-dis}
 The above observations suggest that rainfall is an important factor in influencing turbidity levels in Toronto's beach waters. The study found that on rainy days, turbidity levels increased significantly, with several outliers exceeding 100 NTU, suggesting that rainfall may have washed pollutants into the water and reduced clarity. This finding underscores the role of rainfall in carrying sediment, pollutants, and other debris into water, leading to potential public health risks. The large interquartile range on rainy days suggests that water quality can be highly variable, further stressing the need for a robust water quality monitoring system following heavy rainfall.
 
-## The Role of Waterfowl in Turbidity{#fourth3-dis}
+## The Role of Waterfowl in Turbidity{#third3-dis}
 When examining the relationship between waterfowl and turbidity levels, the correlation between the two was weak, although a slight upward trend was observed. The data showed that in most cases, the presence of waterfowl did not result in an immediate spike in turbidity levels, suggesting that the impact of waterfowl is more cumulative or dependent on other environmental factors such as rainfall. However, the presence of large numbers of waterfowl does pose a pollution risk as they can carry faecal contaminants into the water and elevate bacterial levels. Therefore, I think more data and information on the impact of waterfowl can be sought for further study.
 
-## Wind speed and its effect on turbidity{#fourth4-dis}
+## Wind speed and its effect on turbidity{#third4-dis}
 It is often assumed that wind speed affects water quality by stirring up sediments at the bottom of the water. However, research results have shown no strong relationship between wind speed and turbidity. While lower wind speeds were associated with a wider range of turbidity, higher wind speeds did not necessarily result in higher turbidity. This suggests that while wind is important, it may not be the primary driver of water clarity at these beaches.
 
-## Temperature and Turbidity{#fourth5-dis}
+## Temperature and Turbidity{#third5-dis}
 It was found that both air and water temperatures had little effect on turbidity. The flat regression line in the temperature turbidity analysis showed that temperature fluctuations by themselves do not significantly affect changes in water clarity. This was a little surprising to me because higher temperatures tend to be associated with increased microbial activity, and increased microbial activity can affect water quality.
 
 
-## Data Limitations and future improvement{#fourth6-dis}
+## Data Limitations and future improvement{#third6-dis}
 Observations in the dataset are obtained by city staff through a combination of both manual estimates and instrumental measurements. Manual data collection introduces potential bias and inconsistency because human judgement can vary and is more prone to observational errors. In addition, while some unusual outliers and missing data improves the completeness of the dataset, these filters may inadvertently omit important rare events or distort trends. For example, extreme weather events or unusual environmental conditions (e.g., large bacterial outbreaks) may have been filtered out during the data cleaning process.
 
 Another limiting factor is the lack of detailed water quality measurements other than turbidity. While turbidity is a useful proxy for water clarity, it does not provide a complete picture of water contamination or health risks. Bacterial contamination may occur in relatively clear water, and the lack of a strong relationship between water temperature and turbidity suggests that turbidity alone may not adequately reflect microbial activity. So I expect that future research will provide a more complete understanding of public health risks by incorporating additional water quality indicators, such as bacterial counts or chemical contaminants.
