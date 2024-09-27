@@ -246,7 +246,7 @@ Another limiting factor is the lack of detailed water quality measurements other
 #| warning: false
 #| message: false
 #| label: tbl-sum1
-#| fig-cap: "Variable description"
+#| fig-cap: "Key Variable Description"
 
 data <- data.frame(
   Column = c("dataCollectionDate", "beachName", "windSpeed", "airTemp", "rain", "waterTemp", "waterFowl", "turbidity"),
@@ -317,7 +317,7 @@ sample_data %>%
   column_spec(7:8, width = "5em")                   # Set width for Fowl Count and Turbidity columns
 
 ```
-
+\newpage
 ```{r}
 #| echo: false
 #| eval: true
@@ -375,10 +375,13 @@ summary_stats %>%
     bootstrap_options = c("striped", "hover", "condensed"), 
     full_width = F,   
     position = "center",   
-    font_size = 10   
+    font_size = 10
   ) %>%
   row_spec(0, bold = TRUE, background = "lightgray", color = "black") %>%  # Style header row
+  column_spec(1, bold = TRUE, width = "9em") %>%    # Set width and style for Variable
+  column_spec(2:6, width = "6em") %>%    # Set width for the rest column
   footnote(general = "Summary statistics for Wind Speed, Air Temperature, Water Temperature, Fowl Count, and Turbidity.")
+
 ```
 
 \newpage
