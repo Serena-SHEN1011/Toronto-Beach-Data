@@ -23,6 +23,8 @@ library(opendatatoronto)
 library(kableExtra)
 library(here)
 library(tibble)
+library(dplyr)
+library(knitr)
 ```
 
 ```{r}
@@ -32,6 +34,11 @@ library(tibble)
 
 # Load the clean data
 cleaned_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
+
+# choose 8 variables
+key_variables <- cleaned_data %>%
+  select(dataCollectionDate, beachName, windSpeed, airTemp, rain, waterTemp, waterFowl, turbidity)
+
 ```
 
 
@@ -45,111 +52,17 @@ There are over 18,000 daily observations of beach conditions in this dataset. In
 
 # Data {#sec-data}
 ## Data Overview {#sec1-data} 
-To investigate water quality and beach conditions in Toronto, I found the ‘Toronto Beach Observations’ dataset from the Open Data Toronto portal through the library opendatatoronto (@opendatatoronto). The dataset contains more than 18,000 observations of daily beach conditions and includes a number of various environmental variables, including air temperature, water temperature, wind speed, and waterfowl population, which play a significant role in determining beach water safety. The analysis focuses on the key variables affecting water turbidity, which is a proxy for water pollution risk. All variables are explained and described in (Section A.[1](#appendix-a.1)) In my this report, I will focuses on 8 key variables: date, beach name, wind's speed, air temperature, wether rain or not, water temperature, waterfowl, water turbidity. 
+To investigate water quality and beach conditions in Toronto, I found the ‘Toronto Beach Observations’ dataset from the Open Data Toronto portal through the library opendatatoronto (@opendatatoronto). The dataset contains more than 18,000 observations of daily beach conditions and includes a number of various environmental variables, including air temperature, water temperature, wind speed, and waterfowl population, which play a significant role in determining beach water safety. The analysis focuses on the key variables affecting water turbidity, which is a proxy for water pollution risk. All key variables are explained and described in (Section A.[1](#appendix-a.1)) In my this report, I will focuses on 8 key variables: date, beach name, wind's speed, air temperature, wether rain or not, water temperature, waterfowl, water turbidity. 
   
 I used R(@citeR) for all statistical computing and visualizing and associated software packages tidyverse(@tidyverse) to extensively for data wrangling, visualization, and manipulation. I also used dplyr(@dplyr) or the efficient processing of data, including filtering, summarising and selecting variables. Additionally, I leveraged kableExtra (@kableExtra) package to improve the tables in R Markdown documents and used (@here) package to simplify file path management. It provides a more reliable and reproducible way to construct file paths by using the project root directory as a reference point. Similar methods have been used to assess environmental impacts on public spaces, for example, a ScienceDirect(@saleem2022validation) study examined the impact of environmental stressors on the availability of urban green space. My analyses explored how environmental factors affect the safety and availability of beaches over time, with a particular focus on relationships such as the effect of wind speed on water turbidity and the impact of bird populations on pollution risk. This exhaustive approach provides valuable insights for public health officials and beach managers, helping to enhance the decision-making process regarding beach proposals.
 
-
-## Cleaned Data {#sec2-data} 
-During the data cleaning process, I took several important steps to ensure that the dataset was suitable for analysis. First, all rows containing missing values (NA) were removed. This decision was made to avoid any potential biases or inaccuracies that might result from incomplete data, as missing values could skew the results of the statistical analyses. Also, I removed several outliers. Some of the outliers such as the water temperature was up to 220 degree centigrade, which is a very unusual value. So I set reasonable range values for water temperature, air temperature, and wind speed, and removed any unreasonable values.
-
-At the same time, several variables were removed because they were either redundant or irrelevant to the focus of this analysis. Wind direction was excluded because it has less impact on water conditions than wind speed. Similarly, rainfall was replaced by a simplified binary rainfall variable that indicates whether or not it rained on a given day. This binary approach was chosen to simplify the analysis without compromising the central idea that rainfall affects water quality. The role of waves was removed. This is because, although wave intensity affects beach conditions, its overall effect is not as important to the current discussion of weather, waterfowl, and water quality.
-
-Thus, I selected eight key variables that were deemed most valuable to this analysis. These variables included date and beach name. Wind speed and air temperature were listed as key weather-related variables, as these factors have a significant impact on beach conditions and overall water quality. Water temperature was also considered critical because of its impact on both the beachgoer experience and biological activity in the water. Waterfowl population and turbidity were chosen because they are directly related to water quality. Waterfowl can cause pollution, while turbidity measures water clarity and is often used as an indicator of pollution. Finally, the presence or non-presence of rain was included to capture binary rainfall scenarios, as rainfall can affect water clarity and carry pollutants into the beach environment.
-
-I cleaned and prepared a subset of the data as shown in @tbl-sum1 below. I showed the first and last 5 rows of the key variables in this table.
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: tbl-sum1
-#| fig-cap: "Displaying the first and last 5 rows of seven key variables"
-
-# choose 8 variables
-key_variables <- cleaned_data %>%
-  select(dataCollectionDate, beachName, windSpeed, airTemp, rain, waterTemp, waterFowl, turbidity)
-
-# Displaying the first and last 5 rows of key variables
-sample_data <- bind_rows(head(key_variables, 5), tail(key_variables, 5))
-
-# Generate table
-kbl(sample_data, 
-    col.names = c("Date", "Beach", "Wind (km/h)", "Air Temp (°C)", "Rain", "Water Temp (°C)", "Fowl Count", "Turbidity (NTU)"),
-    ) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
-                full_width = F, 
-                position = "center",
-                font_size = 9) %>%
-  column_spec(1, bold = TRUE, width = "6em") %>%  
-  column_spec(2, width = "8em") %>%  
-  column_spec(3:4, width = "5em") %>%  
-  column_spec(5, width = "2em") %>%  
-  column_spec(6, width = "6em") %>%
-  column_spec(7:8, width = "3em")
-
-```
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: tbl-sum2
-#| fig-cap: "Summary statistics table"
-
-# Calculate summary statistics for key variables
-summary_stats <- key_variables %>%
-  summarise(
-    WindSpeed_Mean = round(mean(windSpeed, na.rm = TRUE), 1),
-    WindSpeed_SD = round(sd(windSpeed, na.rm = TRUE), 1),
-    WindSpeed_Min = round(min(windSpeed, na.rm = TRUE), 1),
-    WindSpeed_Median = round(median(windSpeed, na.rm = TRUE), 1),
-    WindSpeed_Max = round(max(windSpeed, na.rm = TRUE), 1),
-    
-    AirTemp_Mean = round(mean(airTemp, na.rm = TRUE), 1),
-    AirTemp_SD = round(sd(airTemp, na.rm = TRUE), 1),
-    AirTemp_Min = round(min(airTemp, na.rm = TRUE), 1),
-    AirTemp_Median = round(median(airTemp, na.rm = TRUE), 1),
-    AirTemp_Max = round(max(airTemp, na.rm = TRUE), 1),
-    
-    WaterTemp_Mean = round(mean(waterTemp, na.rm = TRUE), 1),
-    WaterTemp_SD = round(sd(waterTemp, na.rm = TRUE), 1),
-    WaterTemp_Min = round(min(waterTemp, na.rm = TRUE), 1),
-    WaterTemp_Median = round(median(waterTemp, na.rm = TRUE), 1),
-    WaterTemp_Max = round(max(waterTemp, na.rm = TRUE), 1),
-    
-    FowlCount_Mean = round(mean(waterFowl, na.rm = TRUE), 1),
-    FowlCount_SD = round(sd(waterFowl, na.rm = TRUE), 1),
-    FowlCount_Min = round(min(waterFowl, na.rm = TRUE), 1),
-    FowlCount_Median = round(median(waterFowl, na.rm = TRUE), 1),
-    FowlCount_Max = round(max(waterFowl, na.rm = TRUE), 1),
-    
-    Turbidity_Mean = round(mean(turbidity, na.rm = TRUE), 1),
-    Turbidity_SD = round(sd(turbidity, na.rm = TRUE), 1),
-    Turbidity_Min = round(min(turbidity, na.rm = TRUE), 1),
-    Turbidity_Median = round(median(turbidity, na.rm = TRUE), 1),
-    Turbidity_Max = round(max(turbidity, na.rm = TRUE), 1)
-  ) %>%
-  pivot_longer(everything(), 
-               names_to = c("Variable", ".value"), 
-               names_pattern = "(.*)_(.*)")
-
-# Display the summary statistics table in a vertically aligned format
-kbl(summary_stats, col.names = c("Variable", "Mean", "SD", "Min", "Median", "Max")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
-                full_width = F, 
-                position = "center", 
-                font_size = 10) %>%
-  row_spec(0, bold = TRUE)
-
-```
-@tbl-sum2 summaries the numerical data. The average wind speed was 13.3km/h with a maximum of 50 km/h, which stirs up sediments and may increase water turbidity. The average air temperature was 19.9°C, which directly affects the comfort of beachgoers and water quality, since warm air leads to higher water temperatures and increased microbial activity. Water temperatures averaged 15.6°C, reaching a maximum of 27°C during the summer months. this is often associated with bacterial growth, leading to health warnings. The number of waterfowl is another important factor, with an average of 32.3 waterfowl, but sometimes the number spikes to 450. The presence of waterfowl can bring faecal pollution into the water which increases the risk of bacterial contamination and water quality warnings.
+I cleaned and prepared a subset of the data as shown in (Section A.[2](#appendix-a.2)). (Section A.[2](#appendix-a.2)) described the process of my data cleaning. I showed the first and last 5 rows of the key variables in @tbl-sum2. Also, I summarize the numerical data in @tbl-sum3.
 
 
 
-##Data Visualization {#sec3-data} 
+## Data Visualization{#sec2-data}
 ### Turbidity across different beach 
-@fig-box1 provides a clear visualization of the distribution of turbidity across various beach locations. Bluffer's Beach Park, Kew Balmy Beach, and Cherry Beach appear to have the highest overall turbidity levels, with numerous outliers reaching above 50 NTU and some exceeding 100 NTU. Hanlan’s Point Beach, Ward’s Island Beach, Gibraltar Point Beach, and Centre Island Beach exhibit much lower turbidity levels overall. Other beaches are showing more variability than low-turbidity beaches but less than the higher-turbidity ones.
+@fig-box1 provides a visualization of the distribution of turbidity across various beach locations. Since this diagram looked squeezed, I used a logarithmic scale for to make trends more apparent @fig-box2. The new diagram looks to contrast very well. Bluffer's Beach Park, Kew Balmy Beach, and Cherry Beach appear to have the highest overall turbidity levels, with numerous outliers reaching above 50 NTU and some exceeding 100 NTU. Hanlan’s Point Beach, Ward’s Island Beach, Gibraltar Point Beach, and Centre Island Beach exhibit much lower turbidity levels overall. Other beaches are showing more variability than low-turbidity beaches but less than the higher-turbidity ones.
 ```{r}
 #| echo: false
 #| eval: true
@@ -160,12 +73,31 @@ kbl(summary_stats, col.names = c("Variable", "Mean", "SD", "Min", "Median", "Max
 
 # Boxplot of turbidity by beach
 ggplot(key_variables, aes(x = reorder(beachName, turbidity, FUN = median), y = turbidity)) +
-  geom_boxplot(fill = "skyblue", color = "black", outlier.color = "red", outlier.shape = 16) +
+  geom_boxplot(fill = "cyan", color = "black", outlier.color = "red", outlier.shape = 16) +
   labs(x = "Beach Name", y = "Turbidity (NTU)") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
 
 ```
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-box2
+#| fig-cap: "Distribution of Turbidity by Beach (Log Scale)"
+
+# Boxplot of turbidity by beach with log scale
+ggplot(key_variables, aes(x = reorder(beachName, turbidity, FUN = median), y = turbidity)) + 
+  geom_boxplot(fill = "cyan", color = "black", outlier.color = "red", outlier.shape = 16) +
+  scale_y_log10() +  # Apply log scale transformation to y-axis
+  labs(x = "Beach Name", y = "Turbidity (NTU, Log Scale)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+```
+
 
 ### Relationship between Air Temperature and Turbidity 
 @fig-scatter1 shows a flat linear regression line, indicating that turbidity remains relatively unaffected by changes in air temperature.
@@ -269,7 +201,7 @@ ggplot(key_variables, aes(x = waterFowl, y = turbidity)) +
 #| eval: true
 #| warning: false
 #| message: false
-#| label: fig-box2
+#| label: fig-box3
 #| fig-cap: "Turbidity Levels on Rainy vs. Non-Rainy Days"
 
 ggplot(cleaned_data, aes(x = rain, y = turbidity)) +
@@ -313,45 +245,143 @@ Another limiting factor is the lack of detailed water quality measurements other
 #| eval: true
 #| warning: false
 #| message: false
-#| label: tbl-sum3
-#| fig-cap: "Description of variables in the dataset"
+#| label: tbl-sum1
+#| fig-cap: "Variable description"
 
 data <- data.frame(
-  column = c("_id", "dataCollectionDate", "beachName", "windSpeed", 
-             "windDirection", "airTemp", "rain", "rainAmount", "waterTemp", 
-             "waterFowl", "waveAction", "waterClarity", "turbidity"),
-  
-  description = c("Unique row identifier for Open Data database", 
-                  "Date observations were collected", 
-                  "Name of beach where observations were collected", 
-                  "Wind speed measured in km/h", 
-                  "Wind directions - East, North-East, North, North-West, West, South-West, South, South-East", 
-                  "Air temperature in degrees Celsius", 
-                  "Presence of rain - Yes, No", 
-                  "Amount of rainfall in mm in the last 24 hours", 
-                  "Water temperature in degrees Celsius", 
-                  "Count of water fowl seen", 
-                  "Observations on wave action - high, low, moderate, none", 
-                  "Visual state of water's clarity - free form text", 
-                  "Turbidity of water measured in Nephelometric Turbidity Units (NTUs)")
+  Column = c("dataCollectionDate", "beachName", "windSpeed", "airTemp", "rain", "waterTemp", "waterFowl", "turbidity"),
+  Description = c(
+    "Date observations were collected",
+    "Name of beach where observations were collected",
+    "Wind speed measured in km/h",
+    "Air temperature in degrees Celsius",
+    "Presence of rain - Yes, No",
+    "Water temperature in degrees Celsius",
+    "Count of water fowl seen",
+    "Turbidity of water measured in Nephelometric Turbidity Units (NTUs)"
+  )
 )
-data$description <- str_wrap(data$description, width = 25)
 
-kable(data, 
-      align = "l", 
-      col.names = c("Column", "Description"),
-      escape = FALSE) %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                full_width = F, 
-                position = "center", 
-                font_size = 10)
+data |>
+  kable(col.names = c("Column", "Description"), align = c("l", "l"), escape = FALSE, booktabs = TRUE) |>
+  kable_styling(full_width = F, position = "center", font_size = 10) |>
+  row_spec(0, bold = TRUE, color = "black", background = "lightgray") |> 
+  column_spec(1, bold = TRUE, width = "15em") |> 
+  column_spec(2, width = "30em") |> 
+  footnote(general = "Note: Description of variables used in the Toronto beach water quality dataset.", general_title = " ")
+
+
 ```
 
+## Cleaned Data {#appendix-a.2}
+During the data cleaning process, I took several important steps to ensure that the dataset was suitable for analysis. First, all rows containing missing values (NA) were removed. This decision was made to avoid any potential biases or inaccuracies that might result from incomplete data, as missing values could skew the results of the statistical analyses. Also, I removed several outliers. Some of the outliers such as the water temperature was up to 220 degree centigrade, which is a very unusual value. So I set reasonable range values for water temperature, air temperature, and wind speed, and removed any unreasonable values.
+
+At the same time, several variables were removed because they were either redundant or irrelevant to the focus of this analysis. Wind direction was excluded because it has less impact on water conditions than wind speed. Similarly, rainfall was replaced by a simplified binary rainfall variable that indicates whether or not it rained on a given day. This binary approach was chosen to simplify the analysis without compromising the central idea that rainfall affects water quality. The role of waves was removed. This is because, although wave intensity affects beach conditions, its overall effect is not as important to the current discussion of weather, waterfowl, and water quality.
+
+Thus, I selected eight key variables that were deemed most valuable to this analysis. These variables included date and beach name. Wind speed and air temperature were listed as key weather-related variables, as these factors have a significant impact on beach conditions and overall water quality. Water temperature was also considered critical because of its impact on both the beachgoer experience and biological activity in the water. Waterfowl population and turbidity were chosen because they are directly related to water quality. Waterfowl can cause pollution, while turbidity measures water clarity and is often used as an indicator of pollution. Finally, the presence or non-presence of rain was included to capture binary rainfall scenarios, as rainfall can affect water clarity and carry pollutants into the beach environment.
+
+@tbl-sum2 summaries the numerical data. The average wind speed was 13.3km/h with a maximum of 50 km/h, which stirs up sediments and may increase water turbidity. The average air temperature was 19.9°C, which directly affects the comfort of beachgoers and water quality, since warm air leads to higher water temperatures and increased microbial activity. Water temperatures averaged 15.6°C, reaching a maximum of 27°C during the summer months. this is often associated with bacterial growth, leading to health warnings. The number of waterfowl is another important factor, with an average of 32.3 waterfowl, but sometimes the number spikes to 450. The presence of waterfowl can bring faecal pollution into the water which increases the risk of bacterial contamination and water quality warnings.
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: tbl-sum2
+#| fig-cap: "Displaying the first and last 5 rows of seven key variables"
+
+# Displaying the first and last 5 rows of key variables
+sample_data <- bind_rows(head(key_variables, 5), tail(key_variables, 5))
+
+# Create the formatted table using kable and kableExtra
+sample_data %>%
+  kable(
+    col.names = c("Date", "Beach", "Wind (km/h)", "Air Temp (°C)", "Rain", "Water Temp (°C)", "Fowl Count", "Turbidity (NTU)"), # Column headers
+    digits = 1,            # Number of decimal places for numerical columns
+    booktabs = TRUE,       # Enable booktabs for improved styling
+    align = c("l", "l", "c", "c", "c", "c", "r", "r"),  # Align columns (left, center, right)
+    format.args = list(big.mark = ",")  # Use commas as thousand separators for large numbers
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"), # Bootstrap styling options
+    full_width = FALSE,   # Prevent the table from taking full width
+    position = "center",  # Center align the table
+    font_size = 8        # Set font size
+  ) %>%
+  row_spec(0, bold = TRUE, background = "lightgray", color = "black") %>%  # Style header row
+  column_spec(1, width = "6em") %>%    # Set width and style for Date column
+  column_spec(2, width = "8em") %>%                 # Set width for Beach column
+  column_spec(3:4, width = "4em") %>%               # Set width for Wind and Air Temp columns
+  column_spec(5, width = "3em") %>%                 # Set width for Rain column
+  column_spec(6, width = "5em") %>%                 # Set width for Water Temp column
+  column_spec(7:8, width = "5em")                   # Set width for Fowl Count and Turbidity columns
+
+```
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: tbl-sum3
+#| fig-cap: "Summary numerical variables"
+
+# Calculate summary statistics for key variables
+summary_stats <- key_variables %>%
+  summarise(
+    WindSpeed_Mean = round(mean(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_SD = round(sd(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_Min = round(min(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_Median = round(median(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_Max = round(max(windSpeed, na.rm = TRUE), 1),
+    
+    AirTemp_Mean = round(mean(airTemp, na.rm = TRUE), 1),
+    AirTemp_SD = round(sd(airTemp, na.rm = TRUE), 1),
+    AirTemp_Min = round(min(airTemp, na.rm = TRUE), 1),
+    AirTemp_Median = round(median(airTemp, na.rm = TRUE), 1),
+    AirTemp_Max = round(max(airTemp, na.rm = TRUE), 1),
+    
+    WaterTemp_Mean = round(mean(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_SD = round(sd(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_Min = round(min(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_Median = round(median(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_Max = round(max(waterTemp, na.rm = TRUE), 1),
+    
+    FowlCount_Mean = round(mean(waterFowl, na.rm = TRUE), 1),
+    FowlCount_SD = round(sd(waterFowl, na.rm = TRUE), 1),
+    FowlCount_Min = round(min(waterFowl, na.rm = TRUE), 1),
+    FowlCount_Median = round(median(waterFowl, na.rm = TRUE), 1),
+    FowlCount_Max = round(max(waterFowl, na.rm = TRUE), 1),
+    
+    Turbidity_Mean = round(mean(turbidity, na.rm = TRUE), 1),
+    Turbidity_SD = round(sd(turbidity, na.rm = TRUE), 1),
+    Turbidity_Min = round(min(turbidity, na.rm = TRUE), 1),
+    Turbidity_Median = round(median(turbidity, na.rm = TRUE), 1),
+    Turbidity_Max = round(max(turbidity, na.rm = TRUE), 1)
+  ) %>%
+  pivot_longer(everything(), 
+               names_to = c("Variable", ".value"), 
+               names_pattern = "(.*)_(.*)")
 
 
+summary_stats %>%
+  kable(
+    col.names = c("Variable", "Mean", "SD", "Min", "Median", "Max"), 
+    booktabs = TRUE,  
+    align = c("l", "c", "c", "c", "c", "c"),   
+    format.args = list(big.mark = ",")  
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"), 
+    full_width = F,   
+    position = "center",   
+    font_size = 10   
+  ) %>%
+  row_spec(0, bold = TRUE, background = "lightgray", color = "black") %>%  # Style header row
+  footnote(general = "Summary statistics for Wind Speed, Air Temperature, Water Temperature, Fowl Count, and Turbidity.")
+```
 
 \newpage
-
 
 # References
 
