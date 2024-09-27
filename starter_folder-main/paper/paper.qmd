@@ -1,12 +1,12 @@
 ---
 title: "Environmental Factors Affecting Water Quality at Toronto Beaches"
-subtitle: "Investigation into Seasonal Trends(2010-2023)"
+subtitle: "In each summer period (2010-2023)"
 author: 
   - Ziyuan Shen
 thanks: "Code and data are available at: https://github.com/Serena-SHEN1011/Toronto-Beach-Data"
-date: 23 September 2024
+date: 26 September 2024
 date-format: long
-abstract: "This paper investigates the environmental factors that influence water quality at Toronto beaches using summer data collected from 2010 to 2023. The research shows key variables such as rainfall, water temperature and waterfowl populations that significantly impact water quality safety warnings and public health. The study found that rainfall and water temperature fluctuations were strongly associated with beach warnings, emphasizing the necessity for improved safety measures. This research will help improve management strategies for Toronto's beaches and ensure a safer recreational experience for residents and visitors."
+abstract: "This study investigated the effects of various environmental factors, including rainfall, wind speed, air and water temperature, and the presence of waterfowl, on turbidity levels at Toronto beaches from 2010 to 2023. By analyzing the data, the study found that rainfall was the most important predictor of increased turbidity, while other factors such as air temperature and the presence of waterfowl showed a weaker correlation. The results of the study highlight the importance of monitoring rainfall events to maintain water quality and ensure public health safety at recreational beaches. This study contributes to a broader understanding of how environmental conditions affect water clarity and provides insights for policymakers to enhance beach management strategies."
 format: pdf
 toc: true
 number-sections: true
@@ -40,9 +40,8 @@ Toronto's beaches are important recreational destinations for residents and visi
 
 Despite ongoing efforts to monitor and manage beach conditions, there has been limited comprehensive analysis of how these environmental variables interact and affect overall beach safety. For example, a study published in Springer explored the correlation between environmental factors and recreational water illnesses, pointing to the need for better predictive models and interventions (@saleem2023same). Similarly, research in MDPI found that rainfall, water turbidity and the presence of waterfowl were often associated with increased bacterial contamination of beach waters, which further emphasises the importance of detailed analysis of beach conditions (@sanchez2021region). However, the specific relationships between wind speed and temperature changes on Toronto beaches remain under-explored. 
 
-There are over 18,000 daily observations of beach conditions in this dataset. In the following section, I chose eight key environmental variables to examine in depth: date, beach name, wind speed, air temperature, water temperature, and waterfowl populations. By using these variables, we explore how environmental factors affect beach safety and availability. Specifically, we examined the relationship between wind speed and water quality, bird populations and water pollution risk, and how temperature variations affect the overall beach experience. This analysis will help to better plan and communicate the safety and attractiveness of Toronto's beaches. Structure is inspired mainly by @rohan.
+There are over 18,000 daily observations of beach conditions in this dataset. In the following section, I chose eight key environmental variables to examine in depth: date, beach name, wind speed, air temperature, water temperature, waterfowl populations and turbidity. The results of the study indicate that while rainfall is the main cause of increased turbidity, factors such as water temperature and the presence of waterfowl also play a role, albeit to a lesser extent. By identifying the conditions that contribute to poorer water quality, this study provides valuable insights for policymakers and beach management organizations, who can use these findings to develop more targeted interventions and recommendations. The methods used, the results obtained and their implications for public health and environmental management are described in detail in subsequent sections. And the following structure was inspired mainly by @rohan.
   
-\newpage
 
 # Data {#sec-data}
 ## Data Overview {#sec1-data} 
@@ -52,11 +51,11 @@ I used R(@citeR) for all statistical computing and visualizing and associated so
 
 
 ## Cleaned Data {#sec2-data} 
-During the data cleaning process, I took several important steps to ensure that the dataset was suitable for analysis. First, all rows containing missing values (NA) were removed. This decision was made to avoid any potential biases or inaccuracies that might result from incomplete data, as missing values could skew the results of the statistical analyses. By removing these rows, the dataset remained consistent and could be used for further analysis without introducing unnecessary complexity in dealing with missing data.
+During the data cleaning process, I took several important steps to ensure that the dataset was suitable for analysis. First, all rows containing missing values (NA) were removed. This decision was made to avoid any potential biases or inaccuracies that might result from incomplete data, as missing values could skew the results of the statistical analyses. Also, I removed several outliers. Some of the outliers such as the water temperature was up to 220 degree centigrade, which is a very unusual value. So I set reasonable range values for water temperature, air temperature, and wind speed, and removed any unreasonable values.
 
 At the same time, several variables were removed because they were either redundant or irrelevant to the focus of this analysis. Wind direction was excluded because it has less impact on water conditions than wind speed. Similarly, rainfall was replaced by a simplified binary rainfall variable that indicates whether or not it rained on a given day. This binary approach was chosen to simplify the analysis without compromising the central idea that rainfall affects water quality. The role of waves was removed. This is because, although wave intensity affects beach conditions, its overall effect is not as important to the current discussion of weather, waterfowl, and water quality.
 
-In addition, I have carefully selected nine key variables that were deemed most valuable to this analysis. These variables included date (the specific date on which observations were recorded) and beach name (identifying the different Toronto beaches on which environmental data were collected). Wind speed and air temperature were listed as key weather-related variables, as these factors have a significant impact on beach conditions and overall water quality. Water temperature was also considered critical because of its impact on both the beachgoer experience and biological activity in the water. Waterfowl population and turbidity were chosen because they are directly related to water quality. Waterfowl can cause pollution, while turbidity measures water clarity and is often used as an indicator of pollution. Finally, the presence or non-presence of rain was included to capture binary rainfall scenarios, as rainfall can affect water clarity and carry pollutants into the beach environment.
+Thus, I selected eight key variables that were deemed most valuable to this analysis. These variables included date and beach name. Wind speed and air temperature were listed as key weather-related variables, as these factors have a significant impact on beach conditions and overall water quality. Water temperature was also considered critical because of its impact on both the beachgoer experience and biological activity in the water. Waterfowl population and turbidity were chosen because they are directly related to water quality. Waterfowl can cause pollution, while turbidity measures water clarity and is often used as an indicator of pollution. Finally, the presence or non-presence of rain was included to capture binary rainfall scenarios, as rainfall can affect water clarity and carry pollutants into the beach environment.
 
 I cleaned and prepared a subset of the data as shown in @tbl-sum1 below. I showed the first and last 5 rows of the key variables in this table.
 ```{r}
@@ -90,14 +89,13 @@ kbl(sample_data,
   column_spec(7:8, width = "3em")
 
 ```
-
 ```{r}
 #| echo: false
 #| eval: true
 #| warning: false
 #| message: false
-#| label: tbl-sum5
-#| fig-cap: ""
+#| label: tbl-sum2
+#| fig-cap: "Summary statistics table"
 
 # Calculate summary statistics for key variables
 summary_stats <- key_variables %>%
@@ -145,125 +143,133 @@ kbl(summary_stats, col.names = c("Variable", "Mean", "SD", "Min", "Median", "Max
   row_spec(0, bold = TRUE)
 
 ```
+@tbl-sum2 summaries the numerical data. The average wind speed was 13.3km/h with a maximum of 50 km/h, which stirs up sediments and may increase water turbidity. The average air temperature was 19.9°C, which directly affects the comfort of beachgoers and water quality, since warm air leads to higher water temperatures and increased microbial activity. Water temperatures averaged 15.6°C, reaching a maximum of 27°C during the summer months. this is often associated with bacterial growth, leading to health warnings. The number of waterfowl is another important factor, with an average of 32.3 waterfowl, but sometimes the number spikes to 450. The presence of waterfowl can bring faecal pollution into the water which increases the risk of bacterial contamination and water quality warnings.
 
+\newpage
 
-
-
-## Data Visualization {#sec3-data} 
-  Air temperature is a key indicator of beach conditions. @fig-his1 visualizes the distribution of air temperature at Toronto beaches and the count of observations for different temperature ranges. The x-axis represents air temperature in degrees Celsius (°C), while the y-axis represents the count of observations. The distribution is approximately normal, centered around 20°C, indicating that most observations were recorded in this temperature range. There are fewer observations in the lower and higher temperature ranges, with temperatures ranging from around 5°C to nearly 35°C.
-  The bar heights reflect the number of observations within each 2°C bin, showing that the majority of temperatures fall between 15°C and 25°C, typical of summer conditions. The steelblue color used for the bars provides a clear contrast against the black outlines, making the data easily distinguishable. This histogram effectively summarizes the air temperature data, revealing that Toronto beaches experience mild to warm temperatures during the observation period.
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: fig-his1
-#| fig-cap: "Air Temperature Distribution"
-
-ggplot(cleaned_data, aes(x = airTemp)) +
-  geom_histogram(binwidth = 2, fill = "steelblue", color = "black") +
-  labs(x = "Air Temperature (°C)", y = "Count") +
-  theme_minimal()
-
-```
-  
-  Wind speed affects both the comfort of beachgoers and water quality. @fig-bar1 illustrates the average wind speed at different Toronto beaches. The x-axis represents the average wind speed in kilometers per hour (km/h), while the y-axis lists the names of the beaches. The chart is horizontally oriented for clarity, with the wind speed values increasing from left to right.The lightblue bars represent the average wind speed at each beach, and the bars are arranged in descending order of wind speed. The chart highlights the variability in wind conditions across different beaches, suggesting that some beaches are more exposed to wind, potentially affecting people's experiences and water conditions.
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: fig-bar1
-#| fig-cap: "Average Wind Speed by Beach"
-
-ggplot(cleaned_data %>% group_by(beachName) %>% summarize(avg_wind = mean(windSpeed, na.rm = TRUE)), 
-       aes(x = reorder(beachName, avg_wind), y = avg_wind)) +
-  geom_bar(stat = "identity", fill = "lightblue") +
-  labs(x = "Beach", y = "Average Wind Speed (km/h)") +
-  coord_flip() + 
-  theme_minimal()
-
-```
-
-  Water temperature varies between beaches, which may influence swimmers' comfort and number of waterfowl in the water. @fig-bar2 shows the average water temperature at different Toronto beaches, with the x-axis representing the average water temperature in degrees Celsius (°C) and the y-axis listing the beach names. The chart is color-coded to distinguish each beach, and the bars are arranged in descending order of average water temperature.
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: fig-bar2
-#| fig-cap: "Average water temperature by beach"
-#| fig-subcap: ["Across different Toronto beaches"]
-
-ggplot(cleaned_data %>% group_by(beachName) %>% summarize(avg_water_temp = mean(waterTemp, na.rm = TRUE)), 
-       aes(x = reorder(beachName, avg_water_temp), y = avg_water_temp, fill = beachName)) +
-  geom_col() +
-  labs(x = "Beach", y = "Average Water Temperature (°C)") +
-  coord_flip() +
-  theme_minimal()  
-```
-
-  @fig-bar3 shows the total waterfowl count on rainy versus non-rainy days. The x-axis represents the presence or absence of rain, with three categories: "N/A" (unknown rain status), "No" (non-rainy days), and "Yes" (rainy days). The y-axis represents the total number of waterfowl observed. The chart indicates a noticeable difference in waterfowl presence based on weather conditions, with more waterfowl observed on non-rainy days compared to rainy ones. We can see that on non-rainy days (labeled "No"), the highest number of waterfowl were observed, with a count exceeding 60,000. On rainy days (labeled "Yes"), the total waterfowl count is significantly lower, around 40,000. The "N/A" category, representing days with unknown rain status, shows very few waterfowl, with a total count close to zero.
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: fig-bar3
-#| fig-cap: "Total water fowl count on rainy vs non-rainy days"
-#| results: hide  # This hides the console output but keeps the plot visible
-
-# 2.# Bar plot: Total water fowl count on rainy vs non-rainy days
-cleaned_data <- cleaned_data %>%
-  mutate(rain = ifelse(is.na(rain), "Unknown", rain))  # Convert NA values to "Unknown"
-
-# Checking the unique values of rain column
-unique(cleaned_data$rain)
-
-# Bar plot: Total water fowl count on rainy vs non-rainy days
-fowl_rain_plot <- cleaned_data %>%
-  group_by(rain) %>%
-  summarize(total_water_fowl = sum(waterFowl, na.rm = TRUE)) %>%
-  ggplot(aes(x = rain, y = total_water_fowl, fill = rain)) +
-  geom_col() +
-  labs(title = "Total Water Fowl Count on Rainy vs. Non-Rainy Days",
-       subtitle = "Comparing the total number of water fowls observed on rainy vs. non-rainy days",
-       x = "Rain (Yes/No)", y = "Total Water Fowl Count") +
-  scale_fill_manual(values = c("lightblue", "lightgreen", "gray")) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-# Print plot and caption
-print(fowl_rain_plot)
-
-```
-  @fig-scatter1 illustrates the relationship between wind speed (x-axis, measured in km/h) and turbidity (y-axis, measured in NTU). Each point represents an observation, with wind speed along the horizontal axis and turbidity along the vertical axis. This scatter plot shows that there is no strong linear relationship between wind speed and turbidity. However, lower wind speeds tend to be associated with a wide range of turbidity levels, whereas higher wind speeds appear to be less common and do not show higher turbidity levels. Most data points are clustered in areas with lower wind speeds (below 20 km/h) and turbidity levels below 50 NTU. Some outliers show higher turbidity levels above 150 NTU, especially at lower wind speeds. At wind speeds above 20 km/h, the data points become scattered, with very few data points over 40 km/h.
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-#| label: fig-scatter1
-#| fig-cap: "Wind speed vs turbidity"
-#| fig-subcap: ["Analyzing the relationship between wind speed and water turbidity"]
-
-# Scatter plot: Wind speed vs turbidity
-wind_turbidity_plot <- ggplot(cleaned_data, aes(x = windSpeed, y = turbidity)) +
-  geom_point(alpha = 0.6, color = "orange") +
-  labs(x = "Wind Speed (km/h)", y = "Turbidity (NTU)") +
-  theme_minimal()
-
-# Print plot and caption
-print(wind_turbidity_plot)
-```
-
-  Rainfall significantly impacts water turbidity, as rain can introduce pollutants and sediments into the water. @fig-box1 shows the distribution of turbidity levels (measured in NTU) on rainy versus non-rainy days. The x-axis represents whether rain was present ("Yes"), absent ("No"), or unknown ("N/A"), while the y-axis represents turbidity levels. The box plot suggests that most observations, whether rainy or not, tend to have lower turbidity levels. Non-rainy days exhibit a slightly broader spread of turbidity levels, but the majority of observations have relatively low turbidity (close to 0 NTU), with several outliers reaching beyond 200 NTU. Turbidity levels were also mostly low in Rainy (Yes) and N/A(Unknown), but there were outliers over 150 NTU.
+# Result-Data Visualization {#third-result}
+## Turbidity across different beach {#third1-result} 
+@fig-box1 provides a clear visualization of the distribution of turbidity across various beach locations. Bluffer's Beach Park, Kew Balmy Beach, and Cherry Beach appear to have the highest overall turbidity levels, with numerous outliers reaching above 50 NTU and some exceeding 100 NTU. Hanlan’s Point Beach, Ward’s Island Beach, Gibraltar Point Beach, and Centre Island Beach exhibit much lower turbidity levels overall. Other beaches are showing more variability than low-turbidity beaches but less than the higher-turbidity ones.
 ```{r}
 #| echo: false
 #| eval: true
 #| warning: false
 #| message: false
 #| label: fig-box1
+#| fig-cap: "Distribution of Turbidity by Beach"
+
+# Boxplot of turbidity by beach
+ggplot(key_variables, aes(x = reorder(beachName, turbidity, FUN = median), y = turbidity)) +
+  geom_boxplot(fill = "skyblue", color = "black", outlier.color = "red", outlier.shape = 16) +
+  labs(x = "Beach Name", y = "Turbidity (NTU)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
+
+```
+
+## Relationship between Air Temperature and Turbidity {#third2-result} 
+@fig-scatter1 shows a flat linear regression line, indicating that turbidity remains relatively unaffected by changes in air temperature.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-scatter1
+#| fig-cap: "Relationship between Air Temperature and Turbidity"
+
+# Scatter plot of air temperature vs turbidity
+ggplot(key_variables, aes(x = airTemp, y = turbidity)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", col = "green") +
+  labs(x = "Air Temperature (°C)", y = "Turbidity (NTU)") +
+  theme_minimal()
+
+```
+
+
+## Relationship between Water Temperature and Turbidity {#third3-result} 
+Relationship between Water Temperature and Turbidity shows the similar trend to @fig-scatter1. Both @fig-scatter1 and @fig-scatter2 shows that air temperature and water temperature are not a strong predictor of turbidity.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-scatter2
+#| fig-cap: "Relationship between Water Temperature and Turbidity"
+
+# Scatter plot of water temperature vs turbidity
+ggplot(key_variables, aes(x = waterTemp, y = turbidity)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", col = "purple") +
+  labs(x = "water Temperature (°C)", y = "Turbidity (NTU)") +
+  theme_minimal()
+
+```
+
+
+## Relationship between Wind Speed and Turbidity{#third4-result} 
+@fig-scatter3 illustrates the relationship between wind speed (x-axis, measured in km/h) and turbidity (y-axis, measured in NTU). This scatter plot shows that there is no strong linear relationship between wind speed and turbidity. 
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-scatter3
+#| fig-cap: "Relationship between Wind Speed and Turbidity"
+
+# Scatter plot of wind speed vs turbidity
+ggplot(key_variables, aes(x = windSpeed, y = turbidity)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", col = "red") +
+  labs(x = "Wind Speed (km/h)", y = "Turbidity (NTU)") +
+  theme_minimal()
+```
+
+## Relationship between Waterfowl Count and Turbidity{#third5-result} 
+@fig-scatter4 is a scatter plot demonstrates the relationship between Waterfowl Count and Turbidity (measured in NTU). There is a slight upward trend, indicated by the blue linear regression line. This suggests that as the number of waterfowl increases, the turbidity also tends to rise, although the increase is relatively mild. Most of the data points are clustered around lower turbidity values (0-50 NTU), especially when waterfowl counts are below 100. This suggests that in many cases the presence of birds does not immediately lead to significant turbidity in the water column.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-scatter4
+#| fig-cap: "Relationship between Waterfowl Count and Turbidity"
+
+# Scatter plot of waterfowl count vs turbidity
+ggplot(key_variables, aes(x = waterFowl, y = turbidity)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", col = "blue") +
+  labs(x = "Waterfowl Count", y = "Turbidity (NTU)") +
+  theme_minimal()
+```
+Since there are many small values and some large outliers, I try to consider using a logarithmic scale for both waterfowl counts and turbidity to spread out the data and make trends more apparent. As shown in @fig-scatter5, it provides a better visualization of the data and suggests that while bird activity has some impact on water turbidity, it is not the only determinant.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-scatter5
+#| fig-cap: "Relationship between Waterfowl Count and Turbidity"
+
+# Scatter plot of waterfowl count vs turbidity with log scale
+ggplot(key_variables, aes(x = waterFowl, y = turbidity)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", col = "blue") +
+  scale_x_log10() +  # Log scale for waterfowl count
+  scale_y_log10() +  # Log scale for turbidity
+  labs(x = "Waterfowl Count (Log Scale)", y = "Turbidity (NTU, Log Scale)") +
+  theme_minimal()
+
+```
+
+## Turbidity Levels on Rainy vs. Non-Rainy Day{#third6-result} 
+@fig-box2 shows the distribution of turbidity levels (measured in NTU) on rainy versus non-rainy days. On rainy days, the change in turbidity increases relatively significantly. The occurrence of multiple outliers above 50 NTU indicates that rainfall is largely responsible for the increase in turbidity. The larger interquartile range (IQR) indicates that turbidity values are more scattered on rainy days compared to non-rainy days.
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: fig-box2
 #| fig-cap: "Turbidity Levels on Rainy vs. Non-Rainy Days"
 
 ggplot(cleaned_data, aes(x = rain, y = turbidity)) +
@@ -275,11 +281,27 @@ ggplot(cleaned_data, aes(x = rain, y = turbidity)) +
 
 \newpage
 
-# Discussion{#third-dis}
-## Data Collection and Limitations
-Observations in the dataset are obtained by city staff through a combination of both manual estimates and instrumental measurements. While the use of automatic tools such as thermometers and turbidimeters can provide more objective and consistent data, manual observations such as waterfowl counts and qualitative assessments of water clarity introduce an element of subjectivity. In addition, removing outliers and missing data entries during the clean-up process addresses errors that can occur during data collection, especially extreme or unreasonable values (e.g., water temperatures above 200°C).
+# Discussion{#fourth-dis}
+## Impacts of beach location on water quality{#fourth1-dis}
+When analyzing the relationship between beach location and turbidity, Bluffer's Beach Park, Kew Balmy Beach and Cherry Beach were consistently higher compared to the other locations. These beaches not only had more outliers but also had larger interquartile ratios (IQRs), indicating large fluctuations in water quality over time. The high turbidity at these beaches may be due to their geographic location, proximity to sources of urban runoff, or local environmental conditions that increase the potential for pollution.
 
-In summary, we measured real-world temperature, speed of wind, rainfall, turbidity, and waterfowl activity using a variety of instruments and estimation techniques, resulting in quantifiable data entries in the dataset. These measurements form the basis for analysing environmental conditions at Toronto Beach, and transform natural phenomena into structured data that can be analysed to reveal trends, patterns and relationships between different variables.
+## Impact of Rainfall on Water Quality{#fourth2-dis}
+The above observations suggest that rainfall is an important factor in influencing turbidity levels in Toronto's beach waters. The study found that on rainy days, turbidity levels increased significantly, with several outliers exceeding 100 NTU, suggesting that rainfall may have washed pollutants into the water and reduced clarity. This finding underscores the role of rainfall in carrying sediment, pollutants, and other debris into water, leading to potential public health risks. The large interquartile range on rainy days suggests that water quality can be highly variable, further stressing the need for a robust water quality monitoring system following heavy rainfall.
+
+## The Role of Waterfowl in Turbidity{#fourth3-dis}
+When examining the relationship between waterfowl and turbidity levels, the correlation between the two was weak, although a slight upward trend was observed. The data showed that in most cases, the presence of waterfowl did not result in an immediate spike in turbidity levels, suggesting that the impact of waterfowl is more cumulative or dependent on other environmental factors such as rainfall. However, the presence of large numbers of waterfowl does pose a pollution risk as they can carry faecal contaminants into the water and elevate bacterial levels. Therefore, I think more data and information on the impact of waterfowl can be sought for further study.
+
+## Wind speed and its effect on turbidity{#fourth4-dis}
+It is often assumed that wind speed affects water quality by stirring up sediments at the bottom of the water. However, research results have shown no strong relationship between wind speed and turbidity. While lower wind speeds were associated with a wider range of turbidity, higher wind speeds did not necessarily result in higher turbidity. This suggests that while wind is important, it may not be the primary driver of water clarity at these beaches.
+
+## Temperature and Turbidity{#fourth5-dis}
+It was found that both air and water temperatures had little effect on turbidity. The flat regression line in the temperature turbidity analysis showed that temperature fluctuations by themselves do not significantly affect changes in water clarity. This was a little surprising to me because higher temperatures tend to be associated with increased microbial activity, and increased microbial activity can affect water quality.
+
+
+## Data Limitations and future improvement{#fourth6-dis}
+Observations in the dataset are obtained by city staff through a combination of both manual estimates and instrumental measurements. Manual data collection introduces potential bias and inconsistency because human judgement can vary and is more prone to observational errors. In addition, while some unusual outliers and missing data improves the completeness of the dataset, these filters may inadvertently omit important rare events or distort trends. For example, extreme weather events or unusual environmental conditions (e.g., large bacterial outbreaks) may have been filtered out during the data cleaning process.
+
+Another limiting factor is the lack of detailed water quality measurements other than turbidity. While turbidity is a useful proxy for water clarity, it does not provide a complete picture of water contamination or health risks. Bacterial contamination may occur in relatively clear water, and the lack of a strong relationship between water temperature and turbidity suggests that turbidity alone may not adequately reflect microbial activity. So I expect that future research will provide a more complete understanding of public health risks by incorporating additional water quality indicators, such as bacterial counts or chemical contaminants.
 
 
 \newpage
@@ -291,7 +313,7 @@ In summary, we measured real-world temperature, speed of wind, rainfall, turbidi
 #| eval: true
 #| warning: false
 #| message: false
-#| label: tbl-sum2
+#| label: tbl-sum3
 #| fig-cap: "Description of variables in the dataset"
 
 data <- data.frame(
