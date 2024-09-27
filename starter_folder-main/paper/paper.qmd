@@ -6,7 +6,7 @@ author:
 thanks: "Code and data are available at: https://github.com/Serena-SHEN1011/Toronto-Beach-Data"
 date: 23 September 2024
 date-format: long
-abstract: "This study examines the water quality and environmental conditions of Toronto beaches based on daily observations collected from May to September each year from 2010 to 2023. The analyses focused on identifying key environmental factors that contribute to water safety warnings, such as temperature, waterFowl presence, and wave action. The results of the study indicate a strong link between rainfall, water temperature fluctuations and the issuance of beach advisories. This study provides valuable insights for policy makers and public health officials to enhance safety measures and management of Toronto's beaches during the peak summer months."
+abstract: "This paper investigates the environmental factors that influence water quality at Toronto beaches using summer data collected from 2010 to 2023. The research shows key variables such as rainfall, water temperature and waterfowl populations that significantly impact water quality safety warnings and public health. The study found that rainfall and water temperature fluctuations were strongly associated with beach warnings, emphasizing the necessity for improved safety measures. This research will help improve management strategies for Toronto's beaches and ensure a safer recreational experience for residents and visitors."
 format: pdf
 toc: true
 number-sections: true
@@ -40,15 +40,15 @@ Toronto's beaches are important recreational destinations for residents and visi
 
 Despite ongoing efforts to monitor and manage beach conditions, there has been limited comprehensive analysis of how these environmental variables interact and affect overall beach safety. For example, a study published in Springer explored the correlation between environmental factors and recreational water illnesses, pointing to the need for better predictive models and interventions (@saleem2023same). Similarly, research in MDPI found that rainfall, water turbidity and the presence of waterfowl were often associated with increased bacterial contamination of beach waters, which further emphasises the importance of detailed analysis of beach conditions (@sanchez2021region). However, the specific relationships between wind speed and temperature changes on Toronto beaches remain under-explored. 
 
-There are over 18,000 daily observations of beach conditions in this dataset. In the following section, I chose six key environmental variables to examine in depth: date, beach name, wind speed, air temperature, water temperature, and bird populations. By using these variables, we explore how environmental factors affect beach safety and availability. Specifically, we examined the relationship between wind speed and water quality, bird populations and water pollution risk, and how temperature variations affect the overall beach experience. This analysis will help to better plan and communicate the safety and attractiveness of Toronto's beaches. Structure is inspired mainly by @rohan.
+There are over 18,000 daily observations of beach conditions in this dataset. In the following section, I chose eight key environmental variables to examine in depth: date, beach name, wind speed, air temperature, water temperature, and waterfowl populations. By using these variables, we explore how environmental factors affect beach safety and availability. Specifically, we examined the relationship between wind speed and water quality, bird populations and water pollution risk, and how temperature variations affect the overall beach experience. This analysis will help to better plan and communicate the safety and attractiveness of Toronto's beaches. Structure is inspired mainly by @rohan.
   
 \newpage
 
 # Data {#sec-data}
 ## Data Overview {#sec1-data} 
-To investigate water quality and beach conditions in Toronto, I found the ‘Toronto Beach Observations’ dataset from the Open Data Toronto portal through the library opendatatoronto (@opendatatoronto). This dataset is provided by the City of Toronto and includes daily observations of water quality and beach conditions at Toronto's public beaches. It records water temperature, wind speed, and other important information critical to public health and recreational safety. A potential limitation of this dataset is the uncertainty of water quality sampling locations, as water quality conditions can change due to factors such as local weather and nearby pollution sources. Therefore, using aggregated data for daily conditions may not fully reflect the specific conditions at each beach. The raw data contains more than 18,000 observations of daily beach conditions and includes a number of variables, including date, beach name, wind speed, avian population, turbidity, etc. All variables are explained and described in (Section A.[1](#appendix-a.1)) In my this report, I will focuses on 8 key variables: date, beach name, wind's speed, air temperature, wether rain or not, water temperature, waterfowl, water turbidity. 
+To investigate water quality and beach conditions in Toronto, I found the ‘Toronto Beach Observations’ dataset from the Open Data Toronto portal through the library opendatatoronto (@opendatatoronto). The dataset contains more than 18,000 observations of daily beach conditions and includes a number of various environmental variables, including air temperature, water temperature, wind speed, and waterfowl population, which play a significant role in determining beach water safety. The analysis focuses on the key variables affecting water turbidity, which is a proxy for water pollution risk. All variables are explained and described in (Section A.[1](#appendix-a.1)) In my this report, I will focuses on 8 key variables: date, beach name, wind's speed, air temperature, wether rain or not, water temperature, waterfowl, water turbidity. 
   
-I used R(@citeR) for all statistical computing and visualizing and associated software packages tidyverse(@tidyverse) to extensively for data wrangling, visualization, and manipulation. I also used dplyr(@dplyr) or the efficient processing of data, including filtering, summarising and selecting variables. Additionally, I leveraged kableExtra (@kableExtra) package to improve the tables in R Markdown documents. Similar methods have been used to assess environmental impacts on public spaces, for example, a ScienceDirect(@saleem2022validation) study examined the impact of environmental stressors on the availability of urban green space. Our analyses explored how environmental factors affect the safety and availability of beaches over time, with a particular focus on relationships such as the effect of wind speed on water turbidity and the impact of bird populations on pollution risk. This exhaustive approach provides valuable insights for public health officials and beach managers, helping to enhance the decision-making process regarding beach proposals.
+I used R(@citeR) for all statistical computing and visualizing and associated software packages tidyverse(@tidyverse) to extensively for data wrangling, visualization, and manipulation. I also used dplyr(@dplyr) or the efficient processing of data, including filtering, summarising and selecting variables. Additionally, I leveraged kableExtra (@kableExtra) package to improve the tables in R Markdown documents and used (@here) package to simplify file path management. It provides a more reliable and reproducible way to construct file paths by using the project root directory as a reference point. Similar methods have been used to assess environmental impacts on public spaces, for example, a ScienceDirect(@saleem2022validation) study examined the impact of environmental stressors on the availability of urban green space. My analyses explored how environmental factors affect the safety and availability of beaches over time, with a particular focus on relationships such as the effect of wind speed on water turbidity and the impact of bird populations on pollution risk. This exhaustive approach provides valuable insights for public health officials and beach managers, helping to enhance the decision-making process regarding beach proposals.
 
 
 ## Cleaned Data {#sec2-data} 
@@ -90,6 +90,63 @@ kbl(sample_data,
   column_spec(7:8, width = "3em")
 
 ```
+
+```{r}
+#| echo: false
+#| eval: true
+#| warning: false
+#| message: false
+#| label: tbl-sum5
+#| fig-cap: ""
+
+# Calculate summary statistics for key variables
+summary_stats <- key_variables %>%
+  summarise(
+    WindSpeed_Mean = round(mean(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_SD = round(sd(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_Min = round(min(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_Median = round(median(windSpeed, na.rm = TRUE), 1),
+    WindSpeed_Max = round(max(windSpeed, na.rm = TRUE), 1),
+    
+    AirTemp_Mean = round(mean(airTemp, na.rm = TRUE), 1),
+    AirTemp_SD = round(sd(airTemp, na.rm = TRUE), 1),
+    AirTemp_Min = round(min(airTemp, na.rm = TRUE), 1),
+    AirTemp_Median = round(median(airTemp, na.rm = TRUE), 1),
+    AirTemp_Max = round(max(airTemp, na.rm = TRUE), 1),
+    
+    WaterTemp_Mean = round(mean(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_SD = round(sd(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_Min = round(min(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_Median = round(median(waterTemp, na.rm = TRUE), 1),
+    WaterTemp_Max = round(max(waterTemp, na.rm = TRUE), 1),
+    
+    FowlCount_Mean = round(mean(waterFowl, na.rm = TRUE), 1),
+    FowlCount_SD = round(sd(waterFowl, na.rm = TRUE), 1),
+    FowlCount_Min = round(min(waterFowl, na.rm = TRUE), 1),
+    FowlCount_Median = round(median(waterFowl, na.rm = TRUE), 1),
+    FowlCount_Max = round(max(waterFowl, na.rm = TRUE), 1),
+    
+    Turbidity_Mean = round(mean(turbidity, na.rm = TRUE), 1),
+    Turbidity_SD = round(sd(turbidity, na.rm = TRUE), 1),
+    Turbidity_Min = round(min(turbidity, na.rm = TRUE), 1),
+    Turbidity_Median = round(median(turbidity, na.rm = TRUE), 1),
+    Turbidity_Max = round(max(turbidity, na.rm = TRUE), 1)
+  ) %>%
+  pivot_longer(everything(), 
+               names_to = c("Variable", ".value"), 
+               names_pattern = "(.*)_(.*)")
+
+# Display the summary statistics table in a vertically aligned format
+kbl(summary_stats, col.names = c("Variable", "Mean", "SD", "Min", "Median", "Max")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = F, 
+                position = "center", 
+                font_size = 10) %>%
+  row_spec(0, bold = TRUE)
+
+```
+
+
 
 
 ## Data Visualization {#sec3-data} 
